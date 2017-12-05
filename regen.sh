@@ -1,7 +1,7 @@
 #!/bin/sh
 ###
 # Shell Script Template
-# Version: 0.0001b
+# Version: 0.000-1
 ###
 
 # Usage hint
@@ -48,7 +48,7 @@ verbose(){
 
 ###
 # regen Script
-# Version: 0.0001a
+# Version: 0.001
 #
 # Create a new Shell Script and strip comments:
 #
