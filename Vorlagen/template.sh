@@ -1,7 +1,7 @@
 #!/bin/sh
 ###
 # Shell Script Template
-# Version: 0.1
+# Version: 0.0001b
 ###
 
 # Usage hint
