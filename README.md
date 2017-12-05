@@ -3,8 +3,8 @@ Lazy rainy Sunday...
 Here is a Template for Shellscripts with standard Functions.
 
 run:
-`regen Vorlagen/template.sh new_script.sh`
-to create a new script without comments.
+`regen template/template.sh template/examples/regen.sh regen_updated.sh`
+to create updated regen script.
 
 # Goal
 ~~Be a script, whitch creates a Template for other Scripts~~
@@ -17,7 +17,7 @@ Be a script, whitch creates Scripts with an actual Template Version.
 Ok. I got a few ideas for this.
 Educational use only.
 
-## Version Management
+## Versioning
 
 Version Sting might be: __0.123-4a__
 
@@ -29,10 +29,20 @@ Version Sting might be: __0.123-4a__
 5. a|b alpha / beta
 
 ### Version History
-#### 0.0001
-     + Be a Script, whitch creates a Template for other Scripts. Done.
-#### 0.0001a
-     + Insert version management
-     + Restoring comments && insert test if outfile exists ...hmpf...
-#### 0.1 pre
-     + Template and regen script to copy and strip the template.
+__0.001-1a__
++ Insert taglines in Template to find Variable Sections
++ Add example directory for Scripts and the Script itself.
++ Moved Vorlagen to template.
++ Added example regen prog.
++ Removed outfile test. Be careful again. :P
+
+__0.001__
++ Be a Script, whitch creates a Template for other Scripts. Done.
++ Chaged versioning
+
+__0.0001a__
++ Insert versioning
++ Restoring comments && insert test if outfile exists ...hmpf...
+
+__0.1 pre__
++ Template and regen script to copy and strip the template.  

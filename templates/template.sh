@@ -1,13 +1,17 @@
 #!/bin/sh
 ###
 # Shell Script Template
-# Version: 0.000-1
+# Version: 0.000-2a
 ###
 
 # Usage hint
 hilfe() {
 	echo "Usage: "$(basename ${0})" [-hv] ";
+	return 0;
 }
+
+###
+# InitVars START
 
 # debug_lvl legt die Gesprächigkeit der Bildschirmausgabe fest
 # Normal: 2
@@ -16,6 +20,12 @@ debug_lvl="2"
 # Um Datei logging auschzuschalten - log lvl unter niedrigsten verbose Aufruf lassen.
 log_lvl="0"
 log_file="./script.log"
+
+# InitVars END
+###
+
+###
+# GetOpts START
 
 while getopts hv opt
 	do
@@ -27,6 +37,9 @@ while getopts hv opt
 	done
 # Falls Argumente nach Optionen Zeiger zurücksetzen.
 shift $(($OPTIND-1))
+
+# GetOpts END
+###
 
 ##
 # Verbose Ausgabe und Logging
@@ -42,5 +55,5 @@ verbose(){
 		return 0;
 	fi;
 }
-# Verbose Module ENDE
+# Verbose Module END
 ##
