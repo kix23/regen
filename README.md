@@ -3,19 +3,32 @@ Lazy rainy Sunday...
 Here is a Template for Shellscripts with standard Functions.
 
 run:
-`regen template/template.sh template/examples/regen.sh regen_updated.sh`
-to create updated regen script.
+`regen.sh template/template.sh template/examples/regen.sh regen_updated.sh`
+
+This a Version made things a bit more complicated. To create this Script you have to do some steps:
+```bash
+./regen.sh ./templates/mod/mod_filecheck.sh ./templates/mod/mod_regen.sh regen_stage_1.sh \
+&& ./regen.sh ./templates/template.sh ./regen_stage_1.sh ./regen_stage_2.sh \
+&& ./regen.sh ./regen_stage_2.sh ./templates/examples/regen.sh ./regen_stage_3.sh \
+&& ./regen_stage_3.sh ./regen_stage_2.sh ./templates/examples/regen.sh ./regen_clone.sh \
+&& ./regen_clone.sh ./regen_stage_2.sh ./templates/examples/regen.sh ./regen_clone_test.sh
+```
+
+to create updated regen script.  
 
 # Goal
-~~Be a script, whitch creates a Template for other Scripts~~
+~~Be a script, which creates a Template for other Scripts~~
 
-Be a script, whitch creates Scripts with an actual Template Version.
+Be a script, which creates Scripts with an actual Template Version.  
+
+...and you see im trying to get familar with this git thing...
 
 ## Status:
+Educational use only.  
+Modular since 0.001-2a
 
-#What, if template changes?
-Ok. I got a few ideas for this.
-Educational use only.
+### What, if template changes?
+Ok. I got a few ideas for this.  
 
 ## Versioning
 
@@ -29,6 +42,12 @@ Version Sting might be: __0.123-4a__
 5. a|b alpha / beta
 
 ### Version History
+__0.001-2a__
++ Moved example/regen.sh to mod/mod_regen.sh
++ example/regen.sh is now the programm file only.
++ Going complete Modular.
++ Added filecheck Module
+
 __0.001-1a__
 + Insert taglines in Template to find Variable Sections
 + Add example directory for Scripts and the Script itself.
