@@ -7,13 +7,11 @@ run:
 
 This a Version made things a bit more complicated. To create this Script you have to do some steps:
 ```bash
-./regen.sh ./templates/mod/mod_filecheck.sh ./templates/mod/mod_regen.sh regen_stage_1.sh \
-&& ./regen.sh ./templates/template.sh ./regen_stage_1.sh ./regen_stage_2.sh \
-&& ./regen.sh ./regen_stage_2.sh ./templates/examples/regen.sh ./regen_stage_3.sh \
-&& ./regen_stage_3.sh ./regen_stage_2.sh ./templates/examples/regen.sh ./regen_clone.sh \
-&& ./regen_clone.sh ./regen_stage_2.sh ./templates/examples/regen.sh ./regen_clone_test.sh
+./regen.sh templates/template.sh templates/mod/mod_filecheck.sh filecheck.sh
+./regen.sh filecheck.sh templates/mod/mod_tagfile.sh tagfile.sh
+./regen.sh tagfile.sh templates/mod/mod_regen.sh regen_mod.sh
+./regen.sh regen_mod.sh templates/examples/regen.sh regen2.sh
 ```
-
 to create updated regen script.  
 
 # Goal

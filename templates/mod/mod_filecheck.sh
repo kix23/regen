@@ -13,13 +13,14 @@ fc_force="1";
 # GetOpts START
 
 		# filecheck force_write
-#		f) fc_force="1";;
+		f) fc_force="1";;
 
 # GetOpts END
 ###
 
 ###
-# Modul START Filecheck
+# Modul START
+# Modul: filecheck
 # Version: 0.000-1b
 
 ##
@@ -35,7 +36,7 @@ fc_force="1";
 mod_check_infile() {
 	# Check if infile is given
 	[ -z ${1} ] \
-	&& verbose 1 "No infile given." \
+	&& verbose 1 "No infile given." && hilfe \
 	&& return 1 ;
 	# Check if infile exists,
 	[ ! -z ${1} ] \
@@ -63,7 +64,7 @@ mod_check_infile() {
 #
 # Rückgabe:
 #		0 Datei kann geschrieben werden
-#		1 irgendein Fehler
+#		1 Datei kann nicht geschrieben werden oder exisitiert (überschreiben variable fc_force auf 1 setzen -> option -f )
 #
 mod_check_outfile(){
 	# Check if outfile is given
