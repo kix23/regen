@@ -3,9 +3,7 @@ Lazy rainy Sunday...
 Here is a Template for Shellscripts with standard Functions.
 
 run:
-`regen.sh template/template.sh template/examples/regen.sh regen_updated.sh`
 
-This a Version made things a bit more complicated. To create this Script you have to do some steps:
 ```bash
 ./regen.sh -mcore,filecheck,tagfile,regen regen outfile.sh
 ```
