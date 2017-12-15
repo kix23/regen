@@ -3,19 +3,28 @@ Lazy rainy Sunday...
 Here is a Template for Shellscripts with standard Functions.
 
 run:
-`regen template/template.sh template/examples/regen.sh regen_updated.sh`
-to create updated regen script.
+`regen.sh template/template.sh template/examples/regen.sh regen_updated.sh`
 
-# Goal
-~~Be a script, whitch creates a Template for other Scripts~~
+This a Version made things a bit more complicated. To create this Script you have to do some steps:
+```bash
+./regen.sh -mcore,filecheck,tagfile,regen regen outfile.sh
+```
+to create updated regen script.  
 
-Be a script, whitch creates Scripts with an actual Template Version.
+# Status:
+~~Be a script, which creates a Template for other Scripts~~
 
-## Status:
+~~Be a script, which creates Scripts with an actual Template Version.~~  
 
-#What, if template changes?
-Ok. I got a few ideas for this.
-Educational use only.
+It's a Script, putting together Script module Snippets to a Core.
+
+...and you see im trying to get familar with this git thing...
+
+Educational use only.  
+Modular since 0.001-2a
+
+### What, if template changes?
+Ok. I got a few ideas for this.  
 
 ## Versioning
 
@@ -29,6 +38,17 @@ Version Sting might be: __0.123-4a__
 5. a|b alpha / beta
 
 ### Version History
+__0.010-1a__
++ Moved mod/template.sh to mod/mod_core.sh
++ Added -m Switch to add all needed Modules in mod_regen. Infile is for Scripts now.
++ Removed Goal. It's self-perpetuating.
+
+__0.001-2a__
++ Moved example/regen.sh to mod/mod_regen.sh
++ example/regen.sh is now the programm file only.
++ Going complete Modular.
++ Added filecheck Module
+
 __0.001-1a__
 + Insert taglines in Template to find Variable Sections
 + Add example directory for Scripts and the Script itself.

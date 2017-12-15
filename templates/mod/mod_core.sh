@@ -30,9 +30,9 @@ log_file="./script.log"
 while getopts hv opt
 	do
 	 case ${opt} in
-		 h) hilfe && exit;;
-		 v) debug_lvl=$((${debug_lvl}+1));;
-		 *) hilfe && return 1;;
+		h) hilfe && exit;;
+		v) debug_lvl=$((${debug_lvl}+1));;
+		*) hilfe && return 1;;
 	 esac
 	done
 # Falls Argumente nach Optionen Zeiger zurücksetzen.
@@ -40,6 +40,15 @@ shift $(($OPTIND-1))
 
 # GetOpts END
 ###
+
+###
+# Args START
+
+# Args END
+###
+
+###
+# Modulblock START
 
 ##
 # Verbose Ausgabe und Logging
@@ -57,3 +66,12 @@ verbose(){
 }
 # Verbose Module END
 ##
+
+# Modulblock END
+###
+
+###
+# Script START
+
+# Script END
+###
