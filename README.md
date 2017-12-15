@@ -7,21 +7,19 @@ run:
 
 This a Version made things a bit more complicated. To create this Script you have to do some steps:
 ```bash
-./regen.sh templates/template.sh templates/mod/mod_filecheck.sh filecheck.sh
-./regen.sh filecheck.sh templates/mod/mod_tagfile.sh tagfile.sh
-./regen.sh tagfile.sh templates/mod/mod_regen.sh regen_mod.sh
-./regen.sh regen_mod.sh templates/examples/regen.sh regen2.sh
+./regen.sh -mcore,filecheck,tagfile,regen regen outfile.sh
 ```
 to create updated regen script.  
 
-# Goal
+# Status:
 ~~Be a script, which creates a Template for other Scripts~~
 
-Be a script, which creates Scripts with an actual Template Version.  
+~~Be a script, which creates Scripts with an actual Template Version.~~  
+
+It's a Script, putting together Script module Snippets to a Core.
 
 ...and you see im trying to get familar with this git thing...
 
-## Status:
 Educational use only.  
 Modular since 0.001-2a
 
@@ -40,6 +38,11 @@ Version Sting might be: __0.123-4a__
 5. a|b alpha / beta
 
 ### Version History
+__0.010-1a__
++ Moved mod/template.sh to mod/mod_core.sh
++ Added -m Switch to add all needed Modules in mod_regen. Infile is for Scripts now.
++ Removed Goal. It's self-perpetuating.
+
 __0.001-2a__
 + Moved example/regen.sh to mod/mod_regen.sh
 + example/regen.sh is now the programm file only.

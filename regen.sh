@@ -1,4 +1,10 @@
 #!/bin/sh
+
+###
+# Regen Script
+# Version: 0.010-1a
+###
+
 ###
 # Shell Script Template
 # Version: 0.000-2a
@@ -6,7 +12,7 @@
 
 # Usage hint
 hilfe() {
-	echo "Usage: "$(basename ${0})" [-fhv] BaseFile SnippetFile Outfile";
+	echo "Usage: "$(basename ${0})" [-hv] ";
 	return 0;
 }
 
@@ -21,12 +27,10 @@ debug_lvl="2"
 log_lvl="0"
 log_file="./script.log"
 
+# InitVars END
+###
 
-# filecheck force write:
-fc_force="1";
-
-
-mod_std_dir="Vorlagen/mod/";
+mod_std_dir="templates/mod/";
 mod_std_prefix="mod_";
 mod_std_suffix=".sh";
 module="core";
@@ -52,19 +56,24 @@ src_start_tag="^# Script START";
 src_end_tag="^# Script END";
 src_writeline=${src_start_tag};
 
-# InitVars END
-###
+
+# filecheck force write:
+fc_force="1";
+
 
 ###
 # GetOpts START
 
-while getopts fhv opt
+while getopts m:fhv opt
 	do
 	 case ${opt} in
 		h) hilfe && exit;;
 
 		# filecheck force_write
 		f) fc_force="1";;
+
+
+		m) module="${OPTARG}";;
 
 		v) debug_lvl=$((${debug_lvl}+1));;
 		*) hilfe && return 1;;
@@ -250,79 +259,80 @@ tagfile_write() {
 }
 
 # Modul: regen
-# Version: 0.001-2a
+# Version: 0.001-3a
 #
 # Creats New Shell Script and Insert Vars
 #
 # Argumente:
-#    $1 Basefile (Template)
-#    $2 Progfile (Programm to insert in Template)
-#    $3 Outfile
+#		$1 Modulnamen -m OptArg (Durch Komma "," getrennt)
+#		$2 Outfile
+#		$3 Modul Directory
+#		$4 Modul Prefix
+#		$5 Modul Suffix
 #
-# Requires: filecheck
+# Requires: filecheck,tagfile
 #
 regen_write() {
-	base_file=${1};
-	mod_file=${2};
-	outfile=${3};
-	mod_check_infile ${base_file} \
-	&& mod_check_infile ${base_file} && verbose 4 "Basefile: "${1} \
-	&& mod_check_infile ${mod_file} && verbose 4 "Progfile: "${2} \
-	&& mod_check_outfile ${outfile} && verbose 4 "Outfile : "${3} \
-	&& verbose 3 "Creating core..." \
-	&& cp ${base_file} ${outfile} \
-	&& verbose 3 "Updating Script..." \
-	&& verbose 3 "Modul: "${mod_file} \
-	&& verbose 3 "Lookup Tags..."
+	verbose 2 "Given Modules: "${1}
+	verbose 5 "Outfile: "${2}
+	mod_check_outfile ${2} && touch ${2}
 
-	[ ! -z "${var_start_tag}" ] && [ ! -z "${var_end_tag}" ] \
-	&& tagfile_test ${mod_file} "${var_start_tag}" "${var_end_tag}" \
-	&& verbose 5 "Placing Vars..." \
-	&& tagfile_write ${mod_file} ${outfile} "${var_start_tag}" "${var_end_tag}" "-1" "${var_writeline}" "-1" \
+	for modul in $(echo $1 | sed "s/,/ /g")
+		do
+			optarg_spec=""
+			mod_file=${3-${mod_std_dir}}${4-${mod_std_prefix}}${modul}${5-${mod_std_suffix}}
 
-	[ ! -z "${mod_start_tag}" ] && [ ! -z "${mod_end_tag}" ] \
-	&& tagfile_test ${mod_file} "${mod_start_tag}" "${mod_end_tag}" \
-	&& verbose 5 "Placing Functions..." \
-	&& tagfile_write ${mod_file} ${outfile} "${mod_start_tag}" "${mod_end_tag}" "-1" "${mod_writeline}" "-1"
+			[ "${modul}" = "core" ] \
+			&& verbose 3 "Copying core file..." \
+			&& cat "${mod_file}" > ${2} && continue
 
-	[ ! -z "${opt_start_tag}" ] && [ ! -z "${opt_end_tag}" ] \
-	&& tagfile_test ${mod_file} "${opt_start_tag}" "${opt_end_tag}" \
-	&& verbose 5 "Placing Options..." \
-	&& verbose 5 "Tricky part: Adding Optlines to GetOpts..." \
-	verbose 5 "Searching Module Options..." \
-	&& tagfile_test ${mod_file} "${opt_start_tag}" "${opt_end_tag}" \
-	|| ( verbose 5 "No Opts for ${mod_file}" && return 1 )  \
-	&& verbose 5 "Parsing Module Options..." \
-	&& [ ! -z ${tag_start_line} ] && [ ! -z ${tag_end_line} ] \
-	&& verbose 5 "Fixed Opts..." \
-	&& options_line=$(sed -n ${tag_start_line},${tag_end_line}p ${mod_file} | grep ')' | grep -v "${opt_arg_linetest}" | cut -d')' -f1 | tr -d '\t' | tr -d ' ' | tr -d '\n' ) ;
+			[ "${modul}" != "core" ] \
+			&& mod_check_infile ${mod_file} \
+			|| (verbose 1 "Modul: ${modul} nicht gefunden." && return 1) || exit \
+			&& verbose 3 "Adding Module: "${modul} \
+			&& tagfile_write ${mod_file} ${2} "${mod_start_tag}" "${mod_end_tag}" "-1" "${mod_writeline}" "-1"
 
-	tagfile_test ${mod_file} "${opt_arg_linetest}" "${opt_end_tag}" \
-	&& optarg_spec=$(grep "${opt_arg_linetest}" ${mod_file}) \
-	&& verbose 5 "With optarg..." \
-	&& tagfile_test ${mod_file} "${opt_start_tag}" "${opt_end_tag}" \
-	&& options_line=${options_line}$(sed -n ${tag_start_line},${tag_end_line}p ${mod_file} | grep ')' | grep "${opt_arg_linetest}" | cut -d')' -f1 | tr -d '\t' | tr -d ' ' | tr -d '\n' | sed "s/.\{1\}/&:/g" ) ;
+			verbose 5 "${modul}: Searching Module Vars..." \
+			&& tagfile_write ${mod_file} ${2} "${var_start_tag}" "${var_end_tag}" "-1" "${var_writeline}" "+1" \
+			&& verbose 4 "${modul}: Adding Module Vars..." \
+			|| verbose 5 "${modul}: No Vars for ${modul}"
 
-	[ ! -z "${options_line}" ] \
-	&& tagfile_write ${mod_file} ${outfile} "${opt_start_tag}" "${opt_end_tag}" "-1" "${opt_writeline}" "-1" \
-	&& verbose 4 "Adding Optlines..." \
-	&& sed -i "s/^while getopts /while getopts ${options_line}/" ${outfile} ;
+			verbose 5 "${modul}: Searching Module Options..." \
+			&& tagfile_test ${mod_file} "${opt_start_tag}" "${opt_end_tag}" \
+			|| ( verbose 5 "${modul}: No Opts for ${modul}" && return 1 )  \
+			&& verbose 5 "${modul}: Parsing Module Options..." \
+			&& [ ! -z ${tag_start_line} ] && [ ! -z ${tag_end_line} ] \
+			&& verbose 5 "${modul}: Fixed Opts..." \
+			&& options_line=$(sed -n ${tag_start_line},${tag_end_line}p ${mod_file} | grep ')' | grep -v "${opt_arg_linetest}" | cut -d')' -f1 | tr -d '\t' | tr -d ' ' | tr -d '\n' )
 
-	[ ! -z "${arg_start_tag}" ] && [ ! -z "${arg_end_tag}" ] \
-	&& tagfile_test ${mod_file} "${arg_start_tag}" "${arg_end_tag}" \
-	&& verbose 5 "Placing Arguments..." \
-	&& tagfile_write ${mod_file} ${outfile} "${arg_start_tag}" "${arg_end_tag}" "-1" "${arg_writeline}" "-1" \
+			tagfile_test ${mod_file} "${opt_arg_linetest}" "${opt_end_tag}" \
+			&& optarg_spec=$(grep "${opt_arg_linetest}" ${mod_file}) \
+			&& verbose 5 "${modul}: With optarg..." \
+			&& tagfile_test ${mod_file} "${opt_start_tag}" "${opt_end_tag}" \
+			&& options_line=${options_line}$(sed -n ${tag_start_line},${tag_end_line}p ${mod_file} | grep ')' | grep "${opt_arg_linetest}" | cut -d')' -f1 | tr -d '\t' | tr -d ' ' | tr -d '\n' | sed "s/.\{1\}/&:/g" )
 
-	[ ! -z "${src_start_tag}" ] && [ ! -z "${src_end_tag}" ] \
-	&& tagfile_test ${mod_file} "${src_start_tag}" "${src_end_tag}" \
-	&& verbose 5 "Placing Script..." \
-	&& tagfile_write ${mod_file} ${outfile} "${src_start_tag}" "${src_end_tag}" "-1" "${src_writeline}" "+1" ;
+			[ ! -z "${options_line}" ] \
+			&& tagfile_write ${mod_file} ${2} "${opt_start_tag}" "${opt_end_tag}" "-1" "${opt_writeline}" "-1" \
+			&& verbose 4 "${modul}: Adding Optlines..." \
+			&& sed -i "s/^while getopts /while getopts ${options_line}/" ${2}
 
-	verbose 3 "Setup..." \
-	&& chmod 755 ${outfile} \
-	&& return 0 \
-	|| return 1 ;
+			verbose 5 "${modul}: Searching Module Args" \
+			&& tagfile_test ${mod_file} "${arg_start_tag}" "${arg_end_tag}" \
+			&& [ "${tag_start_line}" != "-1" ] \
+			&& verbose 4 "${modul}: Adding Module Args..." \
+			&& tagfile_write ${mod_file} ${2} "${arg_start_tag}" "${arg_end_tag}" "-1" "${arg_writeline}" "-1" \
+			|| (verbose 5 "${modul}: No Args for ${modul}")
+
+			[ ! -z "${src_start_tag}" ] && [ ! -z "${src_end_tag}" ] \
+			&& tagfile_test ${mod_file} "${src_start_tag}" "${src_end_tag}" \
+			&& verbose 5 "Placing Script..." \
+			&& tagfile_write ${mod_file} ${2} "${src_start_tag}" "${src_end_tag}" "-1" "${src_writeline}" "+1" ;
+
+			verbose 3 "Setup..." \
+			&& chmod 755 ${2}
+		done
 }
+
 # Modulblock END
 ###
 
@@ -332,10 +342,12 @@ regen_write() {
 # regen Script
 #
 # Arguments:
-#    $1 Template
-#    $2 Snippet
+#    $1 Module -m OptArg seperated by comma ,
+#    $2 Script
 #    $3 Outfile
 #
-regen_write $1 $2 $3
+verbose 1 "Module: ${module} Script: $1 Outfile: ${2}"
+regen_write "${module}" ${2}
+regen_write "templates/examples/"$(basename "${1}") ${2} "" "" ".sh"
 # Script END
 ###
